@@ -28,7 +28,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: your-dockerhub-username/your-image-name:latest
+          tags: 007kumar/nginx:latest
 
       - name: Install Trivy
         run: |
@@ -40,8 +40,8 @@ jobs:
           trivy --version
 
       - name: Run Trivy Scan
-        run: trivy image your-dockerhub-username/your-image-name:latest
+        run: trivy image 007kumar/nginx:latest
 
       - name: Fail workflow if vulnerabilities are found
         run: |
-          trivy image --exit-code 1 --severity CRITICAL,HIGH your-dockerhub-username/your-image-name:latest
+          trivy image --exit-code 1 --severity CRITICAL,HIGH 007kumar/nginx:latest
