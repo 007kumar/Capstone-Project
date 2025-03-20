@@ -53,6 +53,19 @@ jobs:
           # Pretty print JSON output for debugging
           cat trivy_report.json | jq
 
+      - name: Send Slack Notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          VULN_COUNT=$(jq '.Results[0].Vulnerabilities | length' trivy_report.json)
+    
+          if [ "$VULN_COUNT" -gt 0 ]; then
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"❌ *Vulnerabilities Found!* Check the report: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' $SLACK_WEBHOOK_URL
+          else
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"✅ *No vulnerabilities found!* Image is safe to deploy."}' $SLACK_WEBHOOK_URL
+          fi
+          
+
       - name: Upload Reports
         uses: actions/upload-artifact@v4
         with:
