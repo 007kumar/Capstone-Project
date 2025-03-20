@@ -39,13 +39,19 @@ jobs:
           sudo apt update
           sudo apt install -y trivy
           trivy --version
-
+          
       # Run Trivy Scan on Docker Hub Image
       - name: Run Trivy Scan on Docker Hub Image
         run: |
+          # Download the Trivy HTML template
+          mkdir -p contrib && curl -fsSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl -o contrib/html.tpl
+          
+          # Run the Trivy scan and generate reports
           trivy image --severity HIGH,CRITICAL --format json -o trivy_report.json 007kumar/trivyscan:latest
           trivy image --severity HIGH,CRITICAL --format template --template '@contrib/html.tpl' -o trivy_report.html 007kumar/trivyscan:latest
-          cat trivy_report.json | jq  # Pretty print JSON for debugging
+          
+          # Pretty print JSON output for debugging
+          cat trivy_report.json | jq
 
       - name: Upload Reports
         uses: actions/upload-artifact@v4
