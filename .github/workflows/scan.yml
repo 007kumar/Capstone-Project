@@ -43,7 +43,8 @@ jobs:
       # Run Trivy Scan on Docker Hub Image
       - name: Run Trivy Scan on Docker Hub Image
         run: trivy image 007kumar/trivyscan:latest
-          trivy image --severity HIGH,CRITICAL --format json -o trivy_report.json 007kumar/trivyscan:latest
+          trivy image ***/trivyscan:latest --severity HIGH,CRITICAL --format json -o trivy_report.json
+          #trivy image --severity HIGH,CRITICAL --format json -o trivy_report.json 007kumar/trivyscan:latest
           #trivy image --severity HIGH,CRITICAL --format template --template '@contrib/html.tpl' -o trivy_report.html 007kumar/trivyscan:latest
 
       - name: Upload Reports
