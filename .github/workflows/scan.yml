@@ -33,12 +33,13 @@ jobs:
       - name: Install Trivy
         run: |
           sudo apt update
-          sudo apt install wget -y
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
-          tar -xzf trivy_Linux-64bit.tar.gz
-          sudo mv trivy /usr/local/bin/
+          sudo apt install -y curl gnupg lsb-release
+          curl -fsSL https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo tee /etc/apt/trusted.gpg.d/trivy.asc
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -cs) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt update
+          sudo apt install -y trivy
           trivy --version
-
+          
       # Run Trivy Scan on Docker Hub Image
       - name: Run Trivy Scan on Docker Hub Image
         run: trivy image 007kumar/scan-app:latest
