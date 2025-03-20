@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+      - name: Debug Environment Variables
+        run: env | grep AWS || echo "No AWS credentials found"
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
