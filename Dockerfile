@@ -1,8 +1,11 @@
-# Base Image
 FROM nginx:alpine
-#Copy the index.html file /usr/share/nginx/html/
+
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
+
 COPY html/index.html /usr/share/nginx/html/
-#Expose Nginx Port
+
+# Expose port
 EXPOSE 80
-#Start NginxService
+
+# Start Nginx service
 CMD ["nginx", "-g", "daemon off;"]
