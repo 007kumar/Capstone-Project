@@ -25,7 +25,7 @@ jobs:
         run: echo "AWS Region is ${{ secrets.AWS_REGION }}"
 
 
-      # Login to AWS ECR cred
+      # Login to AWS ECR
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
