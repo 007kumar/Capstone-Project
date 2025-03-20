@@ -7,28 +7,23 @@ on:
   pull_request:
 
 jobs:
-  scan:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Log in to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: 007kumar/nginx:latest
+      - name: Build and push Docker image
+        run: |
+          docker build -t 007kumar/scan-app:latest .
+          docker push 007kumar/scan-app:latest
+
 
       - name: Install Trivy
         run: |
