@@ -47,7 +47,7 @@ jobs:
           trivy image --severity HIGH,CRITICAL --format template --template '@contrib/html.tpl' -o trivy_report.html nginx:latest
 
       - name: Upload Reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Trivy Reports
-          path: trivy_report.*
+          name: my-artifact
+          path: my-output-folder/
