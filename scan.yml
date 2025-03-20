@@ -1,24 +1,43 @@
-name: Vulnerability Scan
+name: Docker Image Build and Trivy Scan
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
-  scan:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: docker.io
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t 007kumar/scan-app:latest .
+          docker push 007kumar/scan-app:latest
+
 
       - name: Install Trivy
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/download/v0.45.0/trivy_0.45.0_Linux-64bit.deb
-          sudo dpkg -i trivy_0.45.0_Linux-64bit.deb
+          sudo apt update
+          sudo apt install wget -y
+          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_Linux-64bit.tar.gz
+          tar -xzf trivy_Linux-64bit.tar.gz
+          sudo mv trivy /usr/local/bin/
+          trivy --version
 
-      - name: Scan Docker Image
+      - name: Run Trivy Scan
+        run: trivy image 007kumar/nginx:latest
+
+      - name: Fail workflow if vulnerabilities are found.
         run: |
-          trivy image app
+          trivy image --exit-code 1 --severity CRITICAL,HIGH 007kumar/nginx:latest
