@@ -24,10 +24,10 @@ jobs:
       # Build and push Docker image to Docker Hub only
       - name: Build and push Docker image to Docker Hub
         env:
-          IMAGE_NAME: alpine
+          IMAGE_NAME: 007kumar/scan-app
         run: |
-          docker build -t 007kumar/alpine:latest .
-          docker push 007kumar/alpine:latest
+          docker build -t $IMAGE_NAME:latest .
+          docker push $IMAGE_NAME:latest
 
       # Install Trivy
       - name: Install Trivy
@@ -41,9 +41,9 @@ jobs:
 
       # Run Trivy Scan on Docker Hub Image
       - name: Run Trivy Scan on Docker Hub Image
-        run: trivy image 007kumar/alpine:latest
+        run: trivy image 007kumar/scan-app:latest
 
       # Fail workflow if vulnerabilities are found
       - name: Fail workflow if vulnerabilities are found
         run: |
-          trivy image --exit-code 1 --severity CRITICAL,HIGH 007kumar/alpine:latest
+          trivy image --exit-code 1 --severity CRITICAL,HIGH 007kumar/scan-app:latest
